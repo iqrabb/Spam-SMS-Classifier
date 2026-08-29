@@ -83,7 +83,7 @@ with open("vectorizer.pkl", "rb") as file:
 @app.get("/", response_class=HTMLResponse)
 def home():
 
-    with open("templates/index.html", "r", encoding="utf-8") as file:
+    with open("index.html", "r", encoding="utf-8") as file:
         html_content = file.read()
 
     return html_content
