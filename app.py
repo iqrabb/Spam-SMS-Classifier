@@ -2,38 +2,48 @@ from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse
 
 import pickle
-import nltk
-import string
-
-from nltk.corpus import stopwords
+import re
 from nltk.stem.porter import PorterStemmer
 
 
-
-# NLTK Resources
-# =========================
-
-# nltk.download("punkt")
-# nltk.download("punkt_tab")
-# nltk.download("stopwords")
-
-
 # Text Preprocessing
-# =========================
+
 
 ps = PorterStemmer()
+
+# Hardcoded English stopwords list (no NLTK download required)
+ENGLISH_STOPWORDS = {
+    "i","me","my","myself","we","our","ours","ourselves","you","you're","you've",
+    "you'll","you'd","your","yours","yourself","yourselves","he","him","his",
+    "himself","she","she's","her","hers","herself","it","it's","its","itself",
+    "they","them","their","theirs","themselves","what","which","who","whom",
+    "this","that","that'll","these","those","am","is","are","was","were","be",
+    "been","being","have","has","had","having","do","does","did","doing","a",
+    "an","the","and","but","if","or","because","as","until","while","of","at",
+    "by","for","with","about","against","between","into","through","during",
+    "before","after","above","below","to","from","up","down","in","out","on",
+    "off","over","under","again","further","then","once","here","there","when",
+    "where","why","how","all","any","both","each","few","more","most","other",
+    "some","such","no","nor","not","only","own","same","so","than","too","very",
+    "s","t","can","will","just","don","don't","should","should've","now","d",
+    "ll","m","o","re","ve","y","ain","aren","aren't","couldn","couldn't",
+    "didn","didn't","doesn","doesn't","hadn","hadn't","hasn","hasn't","haven",
+    "haven't","isn","isn't","ma","mightn","mightn't","mustn","mustn't","needn",
+    "needn't","shan","shan't","shouldn","shouldn't","wasn","wasn't","weren",
+    "weren't","won","won't","wouldn","wouldn't"
+}
 
 
 def transform_text(text):
 
     text = text.lower()
 
-    # Tokenization
-    text = nltk.word_tokenize(text)
+    # Tokenization (regex based — no NLTK download needed)
+    text = re.findall(r'\b\w+\b', text)
 
     y = []
 
-    # Remove special characters
+    # Remove special characters (keep only alphanumeric)
     for i in text:
         if i.isalnum():
             y.append(i)
@@ -43,7 +53,7 @@ def transform_text(text):
 
     # Remove stopwords
     for i in text:
-        if i not in stopwords.words("english") and i not in string.punctuation:
+        if i not in ENGLISH_STOPWORDS:
             y.append(i)
 
     text = y[:]
@@ -57,7 +67,7 @@ def transform_text(text):
 
 
 # FASTAPI APP
-# =========================
+
 
 app = FastAPI(
     title="Spam SMS Classifier",
@@ -67,7 +77,7 @@ app = FastAPI(
 
 
 # LOAD MODEL AND VECTORIZER
-# =========================
+
 
 with open("model.pkl", "rb") as file:
     model = pickle.load(file)
@@ -78,7 +88,7 @@ with open("vectorizer.pkl", "rb") as file:
 
 
 # HOME PAGE
-# =========================
+
 
 @app.get("/", response_class=HTMLResponse)
 def home():
@@ -91,7 +101,7 @@ def home():
 
 
 # PREDICTION API
-# =========================
+
 
 @app.post("/predict")
 def predict(message: str = Form(...)):
