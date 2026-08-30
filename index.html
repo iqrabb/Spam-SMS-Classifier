@@ -1,588 +1,407 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>SpamCheck AI — Detect Spam SMS Instantly</title>
-
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-
-        body {
-
-            font-family: Arial, sans-serif;
-
-            min-height: 100vh;
-
-            display: flex;
-
-            justify-content: center;
-
-            align-items: center;
-
-            background: #121417;
-
-            padding: 20px;
-        }
-
-
-        .container {
-
-            width: 100%;
-
-            max-width: 650px;
-
-            background: #1c1f24;
-
-            padding: clamp(22px, 5vw, 40px);
-
-            border-radius: 20px;
-
-            border: 1px solid #2b2f36;
-
-            box-shadow:
-                0 15px 40px rgba(0, 0, 0, 0.4);
-        }
-
-
-        h1 {
-
-            text-align: center;
-
-            color: #f4f6f8;
-
-            font-size: clamp(20px, 5vw, 26px);
-
-            margin-bottom: 10px;
-        }
-
-
-        .subtitle {
-
-            text-align: center;
-
-            color: #9aa3ad;
-
-            font-size: clamp(13px, 3vw, 15px);
-
-            margin-bottom: 30px;
-
-            line-height: 1.5;
-        }
-
-
-        textarea {
-
-            width: 100%;
-
-            height: 150px;
-
-            resize: none;
-
-            padding: 15px;
-
-            border: 2px solid #2b2f36;
-
-            border-radius: 12px;
-
-            font-size: 16px;
-
-            outline: none;
-
-            background: #14161a;
-
-            color: #e6e9ec;
-        }
-
-
-        textarea::placeholder {
-
-            color: #626a73;
-        }
-
-
-        textarea:focus {
-
-            border-color: #10b981;
-        }
-
-
-        button {
-
-            width: 100%;
-
-            margin-top: 15px;
-
-            padding: 15px;
-
-            border: none;
-
-            border-radius: 12px;
-
-            background: #10b981;
-
-            color: #0b0d10;
-
-            font-size: clamp(15px, 4vw, 17px);
-
-            font-weight: bold;
-
-            cursor: pointer;
-        }
-
-
-        button:hover {
-
-            background: #0ea371;
-        }
-
-
-        #result {
-
-            margin-top: 30px;
-
-            display: none;
-
-            padding: clamp(18px, 4vw, 25px);
-
-            border-radius: 15px;
-
-            background: #14161a;
-
-            border: 1px solid #2b2f36;
-        }
-
-
-        .result-title {
-
-            text-align: center;
-
-            font-size: clamp(19px, 5vw, 24px);
-
-            margin-bottom: 20px;
-        }
-
-
-        .spam {
-
-            color: #f87171;
-        }
-
-
-        .not-spam {
-
-            color: #10b981;
-        }
-
-
-        .probability {
-
-            margin-top: 15px;
-        }
-
-
-        .probability-row {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            gap: 10px;
-
-            margin-bottom: 8px;
-
-            font-size: clamp(13px, 3.5vw, 15px);
-
-            color: #c3c9cf;
-        }
-
-
-        .bar-container {
-
-            width: 100%;
-
-            height: 12px;
-
-            background: #2b2f36;
-
-            border-radius: 10px;
-
-            overflow: hidden;
-
-            margin-bottom: 15px;
-        }
-
-
-        .bar {
-
-            height: 100%;
-
-            width: 0%;
-
-            border-radius: 10px;
-
-            transition: width 0.5s ease;
-        }
-
-
-        .spam-bar {
-
-            background: #f87171;
-        }
-
-
-        .not-spam-bar {
-
-            background: #10b981;
-        }
-
-
-        .loading {
-
-            text-align: center;
-
-            color: #9aa3ad;
-
-            margin-top: 20px;
-
-            display: none;
-        }
-
-
-        /* Tablet and small screens */
-
-        @media (max-width: 600px) {
-
-            body {
-
-                padding: 12px;
-
-                align-items: flex-start;
-            }
-
-
-            .container {
-
-                border-radius: 16px;
-
-                margin-top: 20px;
-            }
-
-
-            textarea {
-
-                height: 130px;
-            }
-
-        }
-
-
-        /* Small phones */
-
-        @media (max-width: 360px) {
-
-            .container {
-
-                padding: 18px 14px;
-            }
-
-
-            .probability-row {
-
-                flex-direction: column;
-
-                gap: 2px;
-
-                margin-bottom: 10px;
-            }
-
-        }
-
-    </style>
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>Spam SMS Classifier</title>
+<style>
+  :root {
+    --bg: #070710;
+    --card-bg: #0d0d1a;
+    --card-border: #1c1c30;
+    --input-bg: #0a0a14;
+    --text-primary: #f5f5fa;
+    --text-secondary: #9a9ab0;
+    --accent: #6366f1;
+    --accent-hover: #4f46e5;
+    --accent-glow: rgba(99, 102, 241, 0.35);
+    --spam-color: #f43f5e;
+    --spam-bg: rgba(244, 63, 94, 0.12);
+    --not-spam-color: #22c55e;
+    --not-spam-bg: rgba(34, 197, 94, 0.12);
+    --track-bg: #1c1c30;
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 50% 0%, #10101f 0%, var(--bg) 55%);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--text-primary);
+    padding: 24px 16px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 620px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 36px 32px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  h1 {
+    text-align: center;
+    font-size: clamp(1.3rem, 4vw + 0.5rem, 1.7rem);
+    margin: 0 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    line-height: 1.3;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: clamp(0.85rem, 2vw + 0.5rem, 0.95rem);
+    line-height: 1.5;
+    margin-bottom: 24px;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 140px;
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 14px;
+    font-size: 16px; /* 16px minimum prevents iOS auto-zoom on focus */
+    font-family: inherit;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+
+  button {
+    width: 100%;
+    margin-top: 16px;
+    padding: 15px;
+    min-height: 50px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), #8b5cf6);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+    touch-action: manipulation;
+  }
+
+  button:hover:not(:disabled) {
+    box-shadow: 0 8px 24px var(--accent-glow);
+    transform: translateY(-1px);
+  }
+
+  button:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.75;
+  }
+
+  .btn-icon {
+    display: inline-flex;
+  }
+
+  .spinner {
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .result-box {
+    margin-top: 22px;
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 20px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .result-box.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .result-label {
+    text-align: center;
+    font-size: clamp(1.05rem, 3vw + 0.5rem, 1.3rem);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    padding: 10px;
+    border-radius: 10px;
+    word-break: break-word;
+  }
+
+  .result-label.spam {
+    color: var(--spam-color);
+    background: var(--spam-bg);
+  }
+
+  .result-label.not-spam {
+    color: var(--not-spam-color);
+    background: var(--not-spam-bg);
+  }
+
+  .prob-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    font-size: clamp(0.8rem, 2vw + 0.4rem, 0.9rem);
+    margin: 14px 0 6px;
+    color: var(--text-primary);
+  }
+
+  .prob-row span:first-child {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .prob-row span:last-child {
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+
+  .prob-track {
+    width: 100%;
+    height: 8px;
+    background: var(--track-bg);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .prob-fill {
+    height: 100%;
+    border-radius: 999px;
+    width: 0%;
+    transition: width 0.5s ease;
+  }
+
+  .prob-fill.spam {
+    background: linear-gradient(90deg, #f43f5e, #fb7185);
+  }
+
+  .prob-fill.not-spam {
+    background: linear-gradient(90deg, #22c55e, #4ade80);
+  }
+
+  .error-text {
+    margin-top: 14px;
+    text-align: center;
+    color: var(--spam-color);
+    font-size: 0.9rem;
+    display: none;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  /* Tablet and below */
+  @media (max-width: 480px) {
+    body {
+      padding: 16px 12px;
+    }
+
+    .container {
+      padding: 26px 20px;
+      border-radius: 16px;
+    }
+
+    h1 {
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      min-height: 120px;
+      padding: 12px;
+    }
+
+    button {
+      padding: 14px;
+    }
+
+    .result-box {
+      padding: 16px;
+    }
+  }
+
+  /* Very small phones */
+  @media (max-width: 340px) {
+    .container {
+      padding: 20px 16px;
+    }
+
+    .result-label {
+      font-size: 1rem;
+    }
+  }
+</style>
 </head>
-
-
 <body>
 
-
-<div class="container">
-
-
-    <h1>🛡️ Spam SMS Classifier </h1>
-
-
+  <div class="container">
+    <h1>🛡️ Spam SMS Classifier</h1>
     <p class="subtitle">
-
-        Paste any SMS text below — our machine learning model
-        instantly checks it and tells you whether it's spam or safe.
-
+      Paste any SMS text below — our machine learning model instantly checks it and tells you whether it's spam or safe.
     </p>
 
+    <form id="predict-form">
+      <textarea id="message" name="message" placeholder="Type or paste an SMS message..." autocomplete="off"></textarea>
+      <button type="submit" id="submit-btn">
+        <span class="btn-icon" id="btn-icon">🔍</span>
+        <span id="btn-text">Check Message</span>
+      </button>
+    </form>
 
-    <textarea
-        id="message"
-        placeholder="Example: Congratulations! You have won a free prize..."
-    ></textarea>
+    <p class="error-text" id="error-text">Something went wrong. Please try again.</p>
 
+    <div class="result-box hidden" id="result-box">
+      <div class="result-label" id="result-label"></div>
 
-    <button onclick="predictSpam()">
+      <div class="prob-row">
+        <span>🚨 Spam Probability</span>
+        <span id="spam-prob"></span>
+      </div>
+      <div class="prob-track">
+        <div class="prob-fill spam" id="spam-bar"></div>
+      </div>
 
-        🔍 Check Message
-
-    </button>
-
-
-    <div class="loading" id="loading">
-
-        Checking message...
-
+      <div class="prob-row">
+        <span>✅ Not Spam Probability</span>
+        <span id="not-spam-prob"></span>
+      </div>
+      <div class="prob-track">
+        <div class="prob-fill not-spam" id="not-spam-bar"></div>
+      </div>
     </div>
+  </div>
 
+  <script>
+    const form = document.getElementById("predict-form");
+    const submitBtn = document.getElementById("submit-btn");
+    const btnIcon = document.getElementById("btn-icon");
+    const btnText = document.getElementById("btn-text");
+    const resultBox = document.getElementById("result-box");
+    const resultLabel = document.getElementById("result-label");
+    const spamProb = document.getElementById("spam-prob");
+    const notSpamProb = document.getElementById("not-spam-prob");
+    const spamBar = document.getElementById("spam-bar");
+    const notSpamBar = document.getElementById("not-spam-bar");
+    const errorText = document.getElementById("error-text");
 
-    <div id="result">
-
-
-        <div
-            id="resultTitle"
-            class="result-title">
-        </div>
-
-
-        <div class="probability">
-
-
-            <div class="probability-row">
-
-                <span>
-                    🚨 Spam Probability
-                </span>
-
-                <strong id="spamProbability">
-                    0%
-                </strong>
-
-            </div>
-
-
-            <div class="bar-container">
-
-                <div
-                    id="spamBar"
-                    class="bar spam-bar">
-                </div>
-
-            </div>
-
-
-            <div class="probability-row">
-
-                <span>
-                    ✅ Not Spam Probability
-                </span>
-
-                <strong id="notSpamProbability">
-                    0%
-                </strong>
-
-            </div>
-
-
-            <div class="bar-container">
-
-                <div
-                    id="notSpamBar"
-                    class="bar not-spam-bar">
-                </div>
-
-            </div>
-
-
-        </div>
-
-
-    </div>
-
-
-</div>
-
-
-<script>
-
-
-async function predictSpam() {
-
-
-    const message =
-        document.getElementById("message").value;
-
-
-    // Empty message check
-
-    if (message.trim() === "") {
-
-        alert("Please enter an SMS message.");
-
-        return;
+    function setLoading(isLoading) {
+      submitBtn.disabled = isLoading;
+      if (isLoading) {
+        btnIcon.innerHTML = '<span class="spinner"></span>';
+        btnText.textContent = "Checking...";
+      } else {
+        btnIcon.innerHTML = "🔍";
+        btnText.textContent = "Check Message";
+      }
     }
 
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-    // Show loading
+      const message = document.getElementById("message").value;
+      if (!message.trim()) return;
 
-    document.getElementById("loading").style.display =
-        "block";
+      errorText.style.display = "none";
+      resultBox.classList.remove("visible");
+      setLoading(true);
 
-    document.getElementById("result").style.display =
-        "none";
+      try {
+        const formData = new FormData();
+        formData.append("message", message);
 
+        const response = await fetch("/predict", {
+          method: "POST",
+          body: formData
+        });
 
-    // Create form data
+        if (!response.ok) throw new Error("Request failed");
 
-    const formData =
-        new URLSearchParams();
+        const data = await response.json();
 
-    formData.append(
-        "message",
-        message
-    );
-
-
-    try {
-
-
-        // Send request to FastAPI
-
-        const response =
-            await fetch("/predict", {
-
-                method: "POST",
-
-                headers: {
-
-                    "Content-Type":
-                    "application/x-www-form-urlencoded"
-
-                },
-
-                body: formData
-
-            });
-
-
-        const data =
-            await response.json();
-
-
-        // Hide loading
-
-        document.getElementById("loading").style.display =
-            "none";
-
-
-        // Show result
-
-        document.getElementById("result").style.display =
-            "block";
-
-
-        // Get elements
-
-        const resultTitle =
-            document.getElementById("resultTitle");
-
-
-        const spamProbability =
-            document.getElementById("spamProbability");
-
-
-        const notSpamProbability =
-            document.getElementById("notSpamProbability");
-
-
-        const spamBar =
-            document.getElementById("spamBar");
-
-
-        const notSpamBar =
-            document.getElementById("notSpamBar");
-
-
-        // Display probabilities
-
-        spamProbability.innerText =
-            data.spam_probability + "%";
-
-
-        notSpamProbability.innerText =
-            data.not_spam_probability + "%";
-
-
-        spamBar.style.width =
-            data.spam_probability + "%";
-
-
-        notSpamBar.style.width =
-            data.not_spam_probability + "%";
-
-
-        // Display prediction
+        resultBox.classList.remove("hidden");
 
         if (data.prediction === "Spam") {
-
-
-            resultTitle.innerText =
-                "🚨 SPAM MESSAGE";
-
-
-            resultTitle.className =
-                "result-title spam";
-
-
+          resultLabel.textContent = "🚫 SPAM";
+          resultLabel.className = "result-label spam";
         } else {
-
-
-            resultTitle.innerText =
-                "✅ NOT SPAM";
-
-
-            resultTitle.className =
-                "result-title not-spam";
-
+          resultLabel.textContent = "✅ NOT SPAM";
+          resultLabel.className = "result-label not-spam";
         }
 
+        spamProb.textContent = data.spam_probability + "%";
+        notSpamProb.textContent = data.not_spam_probability + "%";
+        spamBar.style.width = data.spam_probability + "%";
+        notSpamBar.style.width = data.not_spam_probability + "%";
 
-    } catch (error) {
+        requestAnimationFrame(() => {
+          resultBox.classList.add("visible");
+        });
 
+        resultBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
 
-        document.getElementById("loading").style.display =
-            "none";
-
-
-        alert(
-            "Something went wrong. Please try again."
-        );
-
-
-        console.error(error);
-
-    }
-
-}
-
-</script>
-
+      } catch (err) {
+        errorText.style.display = "block";
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
 
 </body>
-
 </html>
