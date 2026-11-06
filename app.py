@@ -2,7 +2,7 @@ from pathlib import Path
 
 from pathlib import Path
 
-from fastapi import FastAPI, Form, HTTPException, HTTPException
+from fastapi import FastAPI, Form, HTTPException
 from fastapi.responses import HTMLResponse
 
 import pickle
