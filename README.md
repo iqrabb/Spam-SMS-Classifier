@@ -127,7 +127,7 @@ Example response shape (values are illustrative):
 - Add the dataset source and a reproducible training/evaluation script.
 - Document the dataset, split strategy, and precision/recall/F1 results.
 - Add automated tests for preprocessing and API behavior.
-- Add input validation, logging, and deployment configuration.
+- Add structured logging, automated tests, and deployment configuration.
 - Include screenshots or a short demo of the interface.
 
 ---
