@@ -1,6 +1,8 @@
 from pathlib import Path
 
-from fastapi import FastAPI, Form, HTTPException
+from pathlib import Path
+
+from fastapi import FastAPI, Form, HTTPException, HTTPException
 from fastapi.responses import HTMLResponse
 
 import pickle
@@ -108,7 +110,11 @@ def home():
 
 
 @app.post("/predict")
-def predict(message: str = Form(...)):
+def predict(message: str = Form(..., min_length=1, max_length=5000)):
+
+    message = message.strip()
+    if not message:
+        raise HTTPException(status_code=422, detail="Message must not be empty or whitespace only.")
 
     # 1. Preprocess SMS
     transformed_text = transform_text(message)
