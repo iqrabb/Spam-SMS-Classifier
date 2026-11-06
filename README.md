@@ -1,3 +1,5 @@
+[![Tests](https://github.com/iqrabb/Spam-SMS-Classifier/actions/workflows/tests.yml/badge.svg)](https://github.com/iqrabb/Spam-SMS-Classifier/actions/workflows/tests.yml)
+
 # Spam SMS Classifier
 
 A web-based machine-learning project that classifies an SMS message as **Spam** or **Not Spam**. It combines a scikit-learn text-classification pipeline with a FastAPI backend and a lightweight HTML/CSS/JavaScript interface.
@@ -126,8 +128,8 @@ Example response shape (values are illustrative):
 
 - Add the dataset source and a reproducible training/evaluation script.
 - Document the dataset, split strategy, and precision/recall/F1 results.
-- Add automated tests for preprocessing and API behavior.
-- Add structured logging, automated tests, and deployment configuration.
+- Expand automated coverage for edge cases and model-version compatibility.
+- Add structured logging, request monitoring, and deployment configuration.
 - Include screenshots or a short demo of the interface.
 
 ---
