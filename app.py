@@ -1,4 +1,6 @@
-from fastapi import FastAPI, Form
+from pathlib import Path
+
+from fastapi import FastAPI, Form, HTTPException
 from fastapi.responses import HTMLResponse
 
 import pickle
@@ -8,6 +10,8 @@ from nltk.stem.porter import PorterStemmer
 
 # Text Preprocessing
 
+
+BASE_DIR = Path(__file__).resolve().parent
 
 ps = PorterStemmer()
 
@@ -79,11 +83,11 @@ app = FastAPI(
 # LOAD MODEL AND VECTORIZER
 
 
-with open("model.pkl", "rb") as file:
+with open(BASE_DIR / "model.pkl", "rb") as file:
     model = pickle.load(file)
 
 
-with open("vectorizer.pkl", "rb") as file:
+with open(BASE_DIR / "vectorizer.pkl", "rb") as file:
     tfidf = pickle.load(file)
 
 
@@ -93,7 +97,7 @@ with open("vectorizer.pkl", "rb") as file:
 @app.get("/", response_class=HTMLResponse)
 def home():
 
-    with open("index.html", "r", encoding="utf-8") as file:
+    with open(BASE_DIR / "index.html", "r", encoding="utf-8") as file:
         html_content = file.read()
 
     return html_content
