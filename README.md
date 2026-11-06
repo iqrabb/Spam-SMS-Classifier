@@ -81,7 +81,7 @@ The application expects `model.pkl` and `vectorizer.pkl` in the project root whe
 
 ### `POST /predict`
 
-Accepts form data (not JSON).
+Accepts form data (not JSON). The `message` field must contain non-whitespace text and is limited to 5,000 characters.
 
 | Field | Type | Required |
 |---|---|---|
